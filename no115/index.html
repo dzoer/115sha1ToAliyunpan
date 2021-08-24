@@ -1,0 +1,120 @@
+<!doctype html>
+ <head>
+  <meta charset="utf8">
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>115sha1 to Aliyunpan</title>
+  <!-- axios -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  
+  <!-- style -->
+  <style>
+   *{
+    padding:0;
+    margin:0;
+    }
+    body{padding-top:60px;}
+    #txt{
+     width:80%;
+     height:50vh;
+     margin: 10px auto 0px auto;
+     display:block;
+     padding:10px;
+    }
+    #go,#upload{
+     padding:10px;
+     box-shadow:0 0 2px grey;
+     margin: 0 auto;
+     width:200px;
+     transition:0.5s;
+    }
+    #a,#txt{
+     display:none;
+    }
+    #upload{
+      margin-top:10px;
+      width:200px;
+    }
+  </style>
+ </head>
+ <body>
+ <center>
+   <h1> 115sha1 to Aliyunpan </h1>
+   <p> 115秒传码转阿里云盘秒传码 </p>
+   <div>
+   <textarea id="txt" placeholder="输入115://，一行一个"></textarea>
+   </div>
+   <input id="upload" multiple type="file">
+   <div id="go">转换</div>
+   <a id="edl"></a>
+ </centre>
+ <script>
+  txt = document.getElementById('txt')
+  go = document.getElementById('go')
+  go.addEventListener("click",function(){
+    //删除首尾换行
+    txt.value = txt.value.replace(/^\s+|\s+$/g,'')
+    //删除中间多余换行
+    //不会↑，我是萌新呜呜呜
+    
+    console.log(txt.value)
+    
+    axios.post('./api.php', {
+     p115sha1: txt.value
+    })
+    .then(function (response) {
+      console.log(response.data);
+      console.log('成功');
+      txt.value = response.data
+      console.log(txt.value)
+      txt.value = txt.value.replace(/^\s+|\s+$/g,'')
+      dl = new File(
+        [txt.value],
+        "sha1导出.txt",{
+          type:"text/plain"
+        }
+      )
+      url = URL.createObjectURL(dl)
+      var a = document.getElementById('edl')
+      var date = new Date()
+      a.href = url
+      a.download = "sha1导出 " +date+ ".txt"
+      a.click()
+      console.log(url)
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  
+    go.style.background = "lightgrey";
+    setTimeout(function(){
+     go.style.background = "white";
+    },1500)
+    
+  })
+  upload.addEventListener("click",function(){
+    upload.style.background = "lightgrey";
+    setTimeout(function(){
+     upload.style.background = "white";
+    },1500)
+  })
+  
+  upload.addEventListener("change",function(){
+    jsonFile = upload.files[0]
+    // console.log(upload.files[0].type)
+    if(upload.files[0].type == "text/plain"){
+    var fr = new FileReader()
+    fr.readAsText(jsonFile,'utf8')
+    fr.onload = function(){
+      console.log(this.result)
+      txt.value=this.result;
+    }
+    }else{
+      alert("请上传txt格式文件")
+    }
+    
+  })
+ </script>
+ </body>
+</html>
