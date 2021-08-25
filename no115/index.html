@@ -79,9 +79,10 @@
       var a = document.getElementById('edl')
       var date = new Date()
       a.href = url
-      a.download = "sha1导出 " +date+ ".txt"
+     a.download = upload.files[0].name + " 导出 " +date+ ".txt"
       a.click()
       console.log(url)
+      upload.value = "";
     })
     .catch(function (error) {
       console.log(error);
